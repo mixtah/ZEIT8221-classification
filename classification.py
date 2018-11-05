@@ -8,8 +8,7 @@ import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
-
-import math
+import math, random as rand
 
 def mean(vals):
     m = []
@@ -89,8 +88,8 @@ pixel2 = [50,70,97,20]
 if __name__ == '__main__':
     print("Starting Classification")
     
-    plt.scatter(classA[2],classA[3],label="ClassA", color="r")
-    plt.scatter(classB[2],classB[3],label="ClassB", color="b")
+    plt.scatter(classA[2],classA[3],label="ClassA", color="#ff0000")
+    plt.scatter(classB[2],classB[3],label="ClassB", color="#0000ff")
     plt.scatter([pixel1[2]],[pixel1[3]],label="Pixel1", color="y")
     plt.scatter([pixel2[2]],[pixel2[3]],label="Pixel2", color="g")
     plt.title("Classification of Stuff")
@@ -100,8 +99,8 @@ if __name__ == '__main__':
     print("Saving Figure Band3-Band4.png")
     plt.close()
     
-    plt.scatter(classA[0],classA[1],label="ClassA", color="r")
-    plt.scatter(classB[0],classB[1],label="ClassB", color="b")
+    plt.scatter(classA[0],classA[1],label="ClassA", color="#ff0000")
+    plt.scatter(classB[0],classB[1],label="ClassB", color="#00ff00")
     plt.scatter([pixel1[0]],[pixel1[1]],label="Pixel1", color="y")
     plt.scatter([pixel2[0]],[pixel2[1]],label="Pixel2", color="g")
     plt.title("Classification of Stuff")
@@ -140,7 +139,45 @@ if __name__ == '__main__':
         print("Pixel 2 is ClassB")
     else:
         print("WTF Pixel2")
-            
+    
+    #Lets sample many different pixels and colour them based on their classification
+    n = 500
+    classApixels = []
+    classBpixels = []
+    for i in range(n):
+        pixel = [rand.randrange(100),rand.randrange(120),rand.randrange(150),rand.randrange(120)]
+        distPixel = [dist(pixel,meanA), dist(pixel,meanB)]
+        minclass = getMinClass(distPixel)
+        if minclass==0:
+            classApixels.append(pixel)
+        else:
+            classBpixels.append(pixel)
+    
+    classApixels = np.matrix(classApixels).transpose().tolist()
+    classBpixels = np.matrix(classBpixels).transpose().tolist()
+    
+    plt.scatter(classA[2],classA[3],label="ClassA", c="r", marker="x")
+    plt.scatter(classB[2],classB[3],label="ClassB", c="b", marker="x")
+    plt.scatter(classApixels[2],classApixels[3],label="ClassASample", c="r")
+    plt.scatter(classBpixels[2],classBpixels[3],label="ClassBSample", c="b")
+    plt.title("Classification of Stuff")
+    plt.xlabel("Band 3")
+    plt.ylabel("Band 4")
+    plt.savefig("MDC-Band3-Band4.png")
+    print("Saving Figure MDC-Band3-Band4.png")
+    plt.close()
+    
+    plt.scatter(classA[0],classA[1],label="ClassA", c="r", marker="x")
+    plt.scatter(classB[0],classB[1],label="ClassB", c="b", marker="x")
+    plt.scatter(classApixels[0],classApixels[1],label="ClassASample", c="r")
+    plt.scatter(classBpixels[0],classBpixels[1],label="ClassBSample", c="b")
+    plt.title("Classification of Stuff")
+    plt.xlabel("Band 1")
+    plt.ylabel("Band 2")
+    plt.savefig("MDC-Band1-Band2.png")
+    print("Saving Figure MDC-Band1-Band2.png")
+    plt.close()
+    
     print("\n\n")
     print("Starting Maximum Likelihood classification: \n")
     
@@ -179,6 +216,44 @@ if __name__ == '__main__':
         print("Pixel 2 is ClassB")
     else:
         print("WTF Pixel2")
+    
+    #Lets sample many different pixels and colour them based on their classification
+    n = 500
+    classApixels = []
+    classBpixels = []
+    for i in range(n):
+        pixel = [rand.randrange(100),rand.randrange(120),rand.randrange(150),rand.randrange(120)]
+        pixelclassdensity = nDimProb(pixel,classesMeanStd)
+        maxClass = getMaxClass(pixelclassdensity)
+        if maxClass==0:
+            classApixels.append(pixel)
+        else:
+            classBpixels.append(pixel)
+    
+    classApixels = np.matrix(classApixels).transpose().tolist()
+    classBpixels = np.matrix(classBpixels).transpose().tolist()
+    
+    plt.scatter(classA[2],classA[3],label="ClassA", c="r", marker="x")
+    plt.scatter(classB[2],classB[3],label="ClassB", c="b", marker="x")
+    plt.scatter(classApixels[2],classApixels[3],label="ClassASample", c="r")
+    plt.scatter(classBpixels[2],classBpixels[3],label="ClassBSample", c="b")
+    plt.title("Classification of Stuff")
+    plt.xlabel("Band 3")
+    plt.ylabel("Band 4")
+    plt.savefig("MLC-Band3-Band4.png")
+    print("Saving Figure MLC-Band3-Band4.png")
+    plt.close()
+    
+    plt.scatter(classA[0],classA[1],label="ClassA", c="r", marker="x")
+    plt.scatter(classB[0],classB[1],label="ClassB", c="b", marker="x")
+    plt.scatter(classApixels[0],classApixels[1],label="ClassASample", c="r")
+    plt.scatter(classBpixels[0],classBpixels[1],label="ClassBSample", c="b")
+    plt.title("Classification of Stuff")
+    plt.xlabel("Band 1")
+    plt.ylabel("Band 2")
+    plt.savefig("MLC-Band1-Band2.png")
+    print("Saving Figure MLC-Band1-Band2.png")
+    plt.close()
     
     print("\n\nFinished Process")
     
